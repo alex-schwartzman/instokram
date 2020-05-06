@@ -8,23 +8,18 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
-@Table(name = "useruploadedimage")
+@Table(name = "user")
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 @Data
-public class UserUploadedImage {
-
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(nullable = false)
-    private String blobUri;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    private String name;
 
     @Column()
-    private String description;
+    private String about;
 }

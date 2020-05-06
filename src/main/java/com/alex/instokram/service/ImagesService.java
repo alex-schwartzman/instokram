@@ -1,6 +1,7 @@
 package com.alex.instokram.service;
 
 import com.alex.instokram.dao.jpa.ImagesRepository;
+import com.alex.instokram.dao.jpa.UsersRepository;
 import com.alex.instokram.domain.UserUploadedImage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,10 +15,16 @@ public class ImagesService {
     @Autowired
     private ImagesRepository imagesRepository;
 
+    @Autowired
+    private UsersRepository usersRepository;
+
     public ImagesService() {
     }
 
     public UserUploadedImage uploadImage(UserUploadedImage image) {
+        if (!usersRepository.existsById(image.getUser().getId())) {
+            usersRepository.save(image.getUser());
+        }
         return imagesRepository.save(image);
     }
 

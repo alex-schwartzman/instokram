@@ -1,7 +1,9 @@
 package com.alex.instokram.api.rest;
 
 import com.alex.instokram.InstokramApplication;
+import com.alex.instokram.domain.User;
 import com.alex.instokram.domain.UserUploadedImage;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,7 +32,7 @@ class ImagesControllerTest {
 
     final static String IMAGES_API_ENDPOINT = "/instokram/v1/image";
     private static final String RESOURCE_LOCATION_PATTERN = "http://localhost" + IMAGES_API_ENDPOINT + "/[0-9]+";
-
+    private static final User user = new User();
 
     private MockMvc mvc;
 
@@ -41,6 +43,8 @@ class ImagesControllerTest {
     public void initTests() {
         MockitoAnnotations.initMocks(this);
         mvc = MockMvcBuilders.webAppContextSetup(context).build();
+        user.setAbout("About: Hello World User");
+        user.setName("Mr Name Surname");
     }
 
     @Test
@@ -77,7 +81,8 @@ class ImagesControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is((int) id)))
                 .andExpect(jsonPath("$.blobUri", is(r1.getBlobUri())))
-                .andExpect(jsonPath("$.uploadedBy", is(r1.getUploadedBy())))
+                .andExpect(jsonPath("$.user.name", is(r1.getUser().getName())))
+                .andExpect(jsonPath("$.user.about", is(r1.getUser().getAbout())))
                 .andExpect(jsonPath("$.description", is(r1.getDescription())));
 
         //DELETE
@@ -95,7 +100,7 @@ class ImagesControllerTest {
         UserUploadedImage image = new UserUploadedImage();
         image.setBlobUri(imagePrefix + "_blobURI");
         image.setDescription(imagePrefix + "_description");
-        image.setUploadedBy(imagePrefix + "_uploadedBy");
+        image.setUser(user);
         return image;
     }
 
@@ -105,8 +110,11 @@ class ImagesControllerTest {
     }
 
     private byte[] toJson(Object r) throws Exception {
-        ObjectMapper map = new ObjectMapper();
-        return map.writeValueAsString(r).getBytes();
+        return toJsonString(r).getBytes();
+    }
+
+    private String toJsonString(Object r) throws JsonProcessingException {
+        return new ObjectMapper().writeValueAsString(r);
     }
 
     // match redirect header URL (aka Location header)

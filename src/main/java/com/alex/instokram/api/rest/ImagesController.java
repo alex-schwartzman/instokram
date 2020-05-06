@@ -70,6 +70,7 @@ public class ImagesController implements ApplicationEventPublisherAware {
     @ResponseStatus(HttpStatus.CREATED)
     public void uploadImage(@RequestBody UserUploadedImage image,
                             HttpServletRequest request, HttpServletResponse response) {
+
         UserUploadedImage uploadedImage = this.imageService.uploadImage(image);
         response.setHeader(HttpHeaders.LOCATION, request.getRequestURL().append("/").append(uploadedImage.getId()).toString());
     }

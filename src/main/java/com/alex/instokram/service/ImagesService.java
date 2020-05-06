@@ -25,10 +25,6 @@ public class ImagesService {
         return imagesRepository.findById(id);
     }
 
-    public void updateImage(UserUploadedImage image) {
-        imagesRepository.save(image);
-    }
-
     public void deleteImage(long id) {
         imagesRepository.deleteById(id);
     }

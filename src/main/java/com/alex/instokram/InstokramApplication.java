@@ -7,9 +7,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @SpringBootApplication
 @EnableJpaRepositories("com.alex.instokram.dao.jpa")
 public class InstokramApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(InstokramApplication.class, args);
 	}
-
 }

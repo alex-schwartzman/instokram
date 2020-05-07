@@ -5,6 +5,8 @@ import com.alex.instokram.domain.UserUploadedImage;
 import com.alex.instokram.exception.DataFormatException;
 import com.alex.instokram.exception.ResourceNotFoundException;
 import com.alex.instokram.service.ImagesService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
@@ -20,6 +22,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/instokram/v1/image")
+@Api(tags = {"images"})
 public class ImagesController implements ApplicationEventPublisherAware {
     protected ApplicationEventPublisher eventPublisher;
 
@@ -56,6 +59,7 @@ public class ImagesController implements ApplicationEventPublisherAware {
     @ResponseStatus(HttpStatus.OK)
     public
     @ResponseBody
+    @ApiOperation(value = "Get a paginated list of all images.", notes = "The list is paginated. You can provide a page number (default 0) and a page size (default 100)")
     Page<UserUploadedImage> getAllImages(
             @RequestParam(value = "page", required = false, defaultValue = DEFAULT_PAGE_NUM) Integer page,
             @RequestParam(value = "size", required = false, defaultValue = DEFAULT_PAGE_SIZE) Integer size,
@@ -68,6 +72,7 @@ public class ImagesController implements ApplicationEventPublisherAware {
             consumes = {"application/json", "application/xml"},
             produces = {"application/json", "application/xml"})
     @ResponseStatus(HttpStatus.CREATED)
+    @ApiOperation(value = "Register uploaded image.", notes = "After you have uploaded the image to the blob, pass it's url here.")
     public void uploadImage(@RequestBody UserUploadedImage image,
                             HttpServletRequest request, HttpServletResponse response) {
 
@@ -81,6 +86,7 @@ public class ImagesController implements ApplicationEventPublisherAware {
     @ResponseStatus(HttpStatus.OK)
     public
     @ResponseBody
+    @ApiOperation(value = "Get a single image.", notes = "You have to provide a valid image ID.")
     UserUploadedImage getImage(@PathVariable("id") Long id,
                                HttpServletRequest request, HttpServletResponse response) throws ResourceNotFoundException {
         Optional<UserUploadedImage> image = this.imageService.getImage(id);
@@ -94,6 +100,7 @@ public class ImagesController implements ApplicationEventPublisherAware {
             method = RequestMethod.DELETE,
             produces = {"application/json", "application/xml"})
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ApiOperation(value = "Delete an image.", notes = "You have to provide a valid image ID in the URL. Once deleted it can not be recovered.")
     public void deleteImage(@PathVariable("id") Long id, HttpServletRequest request,
                             HttpServletResponse response) {
         this.imageService.deleteImage(id);
